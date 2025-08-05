@@ -1,0 +1,496 @@
+/* 全体の基本設定 */
+body {
+    background-color: #1a1a1a; /* ダークグレーの背景 */
+    color: #f0f0f0; /* 明るいグレーの文字色 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* アプリ本体のコンテナ */
+#app {
+    width: 90%;
+    max-width: 400px;
+    height: 80vh;
+    max-height: 700px;
+    background-color: #2b2b2b;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ボタンの基本スタイル */
+.btn {
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    background-color: #15a5ff; /* アクセントカラー（青） */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+    background-color: #027dca;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+/* ---- 追記ここから ---- */
+
+.registration-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-right: 500px;
+}
+
+.input-field {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #3b3b3b;
+    color: #f0f0f0;
+}
+
+.input-field::placeholder {
+    color: #aaa;
+}
+
+.memo-field {
+    height: 80px; /* メモ欄を少し大きく */
+    resize: vertical; /* 縦方向のリサイズを許可 */
+}
+/* ---- 追記ここから(02) ---- */
+
+.flashcard {
+    width: 100%;
+    cursor: pointer;
+    perspective: 1000px;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: 50%;
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #3b3b3b;
+    border-radius: 10px;
+}
+
+.card-front {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    padding: 20px;
+}
+
+.flashcard.is-flipped .card-front {
+    transform: rotateY(180deg);
+}
+
+.flashcard.is-flipped .card-back {
+    transform: rotateY(360deg);
+}
+
+.japanese-translation {
+    font-size: 2.0rem;
+    font-weight: bold;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    color: #15a5ff;
+    overflow-y: auto;
+    max-height: 70%;
+
+}
+
+.memo {
+    font-size: 1.0rem;
+    color: #f0f0f0;
+    align-self: stretch;
+    border-top: 1px solid #555;
+    padding-top: 10px;
+    margin-top: 10px;
+    height: 30%;
+    overflow-y: auto;
+}
+
+.card-nav {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.nav-btn {
+    width: 48%;
+}
+
+.back-btn {
+    margin-top: 15px;
+    background-color: #555;
+}
+.back-btn:hover {
+    background-color: #444;
+}
+/* ---- 追記ここから(03) ---- */
+
+.list-btn {
+    background-color: #34c759; /* 緑色 */
+}
+.list-btn:hover {
+    background-color: #2ca049;
+}
+
+.word-list-container {
+    width: 100%;
+    height: 85%;
+    overflow-y: auto; /* 単語が増えたらスクロールできるように */
+    padding-right: 10px;
+}
+
+.word-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3b3b3b;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.word-text {
+    font-size: 1.1rem;
+}
+
+
+/* ---- 追記ここから(05) ---- */
+
+.section-title {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #888;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+.section-title:first-child {
+    margin-top: 0;
+}
+
+.sentence-btn {
+    background-color: #15a5ff
+}
+.sentence-btn:hover {
+    background-color: #027dca;
+}
+/* ---- 追記ここから (06)---- */
+
+.japanese-sentence {
+    font-size: 1.3rem;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.answer-container {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #1c1c1e;
+    border-radius: 8px;
+}
+
+.answer-container h4 {
+    margin: 0 0 5px 0;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.answer-container p {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+}
+
+.button-container {
+    display: flex; /* 中の要素（ボタン）を横並びにする */
+    align-items: center; /* ボタンの縦位置を中央に揃える */
+}
+
+/*---- Font Awesomeアイコンのスタイル ---- */
+.edit-icon,.delete-icon{
+    font-size:1.2rem;/*アイコンのサイズ*/
+    margin-left:8px;/*アイコン同士の間隔*/
+    cursor:pointer;/*カーソルを合わせたときに指の形にする*/
+}
+
+
+.edit-icon {
+    color: #ff9500; /* 編集アイコンの色（オレンジ） */
+}
+
+.delete-icon {
+    color: #ff3b30; /* 削除アイコンの色（赤） */
+}
+
+/* ボタンコンテナ内のアイコン配置調整 */
+.button-container {
+    display: flex;
+    align-items: center; /* アイコンの縦方向中央揃え */
+}
+
+.button-container i:not(:last-child) {
+    margin-right: 5px; /* アイコン同士の右側の余白 */
+}
+
+/* ---- モーダルダイアログのスタイル ---- */
+.modal-overlay {
+    position: fixed; /* 画面全体を覆う */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明の黒い背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 他の要素より手前に表示 */
+}
+
+.modal-content {
+    background-color: #2b2b2b; /* アプリ本体と同じ背景色 */
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+.modal-content p {
+    margin: 0 0 25px 0;
+    font-size: 1.2rem;
+}
+
+.modal-buttons .btn {
+    margin: 0 10px;
+}
+
+/* ---- パスワード入力欄のラッパー ---- */
+.password-wrapper {
+    position: relative; /* アイコンを絶対配置するための基準 */
+    width: 100%;
+}
+
+/* ---- アイコンの位置調整 ---- */
+.toggle-password {
+    position: absolute;
+    top: 37%;
+    right: 15px; /* 右からの位置 */
+    transform: translateY(-50%); /* 垂直方向の中央揃え */
+    cursor: pointer;
+    color: #aaa; /* アイコンの色 */
+}
+
+.toggle-password:hover {
+    color: #f0f0f0; /* ホバー時の色 */
+}
+
+.registration-form {
+    position: relative; /* 子要素のabsolute配置の基準にする */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #333;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px; /* フォームの幅を調整 */
+    margin: 20px auto; /* フォームを中央に配置 */
+}
+
+.registration-form .input-field {
+    padding-right: 40px; /* アイコン分の右側のスペースを確保 */
+}
+
+/* ---- タグ入力エリアのスタイル ---- */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tag-item {
+    background-color: #555;
+    color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.tag-item .remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ---- タグ選択ボタンのスタイル ---- */
+.tag-selection-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.tag-button {
+    background-color: #3a3a3c;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tag-button:hover {
+    background-color: #555;
+}
+
+/* ---- タグ編集画面の追加スタイル ---- */
+.sub-title {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #aaa;
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.existing-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 15px;
+}
+
+.existing-tag-item {
+    background-color: #3a3a3c;
+    border: 1px solid #555;
+    color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.existing-tag-item:hover {
+    background-color: #555;
+}
+
+/* ---- タグ選択モーダルのスタイル ---- */
+.tag-modal-content {
+    background-color: #3b3b3b;
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.tag-modal-content h3 {
+    margin: 0 0 15px 0;
+    text-align: center;
+}
+
+.tag-modal-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.tag-modal-item {
+    background-color: #555;
+    border: 1px solid transparent;
+    color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tag-modal-item:hover {
+    background-color: #6b6b6b;
+}
+
+.tag-modal-item.selected {
+    background-color: #007aff; /* 選択されているタグの色 */
+    border-color: #007aff;
+    font-weight: bold;
+}
+
+/* ---- 登録フォームのスタイル変更 ---- */
+.registration-form {
+    position: relative; /* ★ アイコンを絶対配置するための基準 */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* ---- 「×」ボタンのスタイルを追加 ---- */
+.close-button {
+    position: absolute;
+    top: 0.5px;
+    right: 0.05px;
+    font-size: 2.0rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-button:hover {
+    color: #f0f0f0;
+}
