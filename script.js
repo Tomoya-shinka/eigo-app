@@ -1055,7 +1055,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let tagButtonsHTML = allUniqueTags.map(tag => {
             const isSelected = currentModalTags.includes(tag);
-            return `<button class="tag-modal-item ${isSelected ? 'selected' : ''}" data-tag="${tag}">${tag}</button>`;
+            return `<button class="tag-modal-item ${isSelected ? 'selected' : ''}" data-tag="${tag}" title="${tag}">${tag}</button>`;
         }).join('');
 
         modalOverlay.innerHTML = `
