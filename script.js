@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ★ 既存タグ選択ボタンのクリックイベント
         selectTagsButton.addEventListener('click', () => {
-            showTagSelectionModal(words, currentTags, (updatedTags) => {
+            showTagSelectionModal(sentences, currentTags, (updatedTags) => {
                 currentTags = updatedTags; // 選択結果を反映
                 renderTags(); // 表示を更新
             });
