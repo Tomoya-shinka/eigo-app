@@ -540,7 +540,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!currentTags.includes(newTag)) {
                     currentTags.push(newTag);
                     renderTags(); // 選択済みタグを再描画
-                    renderExistingTags(); // 新しいタグができたので既存タグリストも更新
                 }
                 tagInput.value = '';
             }
@@ -559,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeButton.addEventListener('click', () => {
             // 編集モードか新規登録かで戻る場所を変える
             if (isEditMode) {
-                showListPage();
+                showSentenceListPage();
             } else {
                 showModeSelectionScreen();
             }
