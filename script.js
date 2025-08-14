@@ -246,7 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const memorizeButton = document.createElement('button');
         memorizeButton.textContent = '単語を暗記する';
         memorizeButton.className = 'btn';
-        memorizeButton.addEventListener('click', () => showRegistrationScreen());
+        memorizeButton.addEventListener('click', () => {
+            // ★★★ ここで上限チェックを行う ★★★
+            const FREE_PLAN_LIMIT = 100;
+            if (words.length >= FREE_PLAN_LIMIT) {
+                alert(`無料プランでは、登録できる単語は${FREE_PLAN_LIMIT}個までです。`);
+            } else {
+                showRegistrationScreen();
+            }
+        });
 
         const reviewButton = document.createElement('button');
         reviewButton.textContent = '単語を復習する';
@@ -272,7 +280,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const memorizeSentenceButton = document.createElement('button');
         memorizeSentenceButton.textContent = '例文を暗記する';
         memorizeSentenceButton.className = 'btn sentence-btn';
-        memorizeSentenceButton.addEventListener('click', () => showSentenceRegistrationScreen());
+        memorizeSentenceButton.addEventListener('click', () => {
+            // ★★★ ここで上限チェックを行う ★★★
+            const FREE_PLAN_LIMIT = 50; // 例文の上限数を設定
+            if (sentences.length >= FREE_PLAN_LIMIT) {
+                alert(`無料プランでは、登録できる例文は${FREE_PLAN_LIMIT}個までです。`);
+            } else {
+                showSentenceRegistrationScreen();
+            }
+        });
         
         const reviewSentenceButton = document.createElement('button');
         reviewSentenceButton.textContent = '例文を復習する';
