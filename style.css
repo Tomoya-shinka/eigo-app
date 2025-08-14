@@ -494,3 +494,37 @@ body {
 .close-button:hover {
     color: #f0f0f0;
 }
+
+/* ---- レスポンシブ対応（スマホ表示用） ---- */
+@media (max-width: 600px) {
+    /* アプリ本体を全画面表示にする */
+    #app {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        max-height: none;
+    }
+
+    /* フォームの見た目を調整 */
+    .registration-form {
+        width: 90%;
+    }
+
+    /* カードの高さを少し調整 */
+    .flashcard {
+        min-height: 60%;
+    }
+}
+
+/* ---- アプリらしい操作性のための小技 ---- */
+
+/* ボタンなどをタップした時の青いハイライトを消す */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ボタンの文字を意図せず選択してしまうのを防ぐ */
+.btn, .tag-button, .tag-modal-item, .icon {
+    user-select: none;
+    -webkit-user-select: none;
+}
