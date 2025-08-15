@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- データ管理 ---
     let words = [];
     let sentences = [];
+    let currentUser = null; // ★ この行を追加
     let currentIndex = 0;
 
     // ★ 復習対象の単語・例文を一時的に保存する配列
@@ -30,14 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
      // ★ asyncを追加して、非同期処理に対応
     auth.onAuthStateChanged(async user => {
         if (user) {
-            // ★ ログインしている場合
-            console.log(user.email + "でログインしています。");
-            // ★ Firestoreからデータを読み込むように変更
+            // ★ Firestoreからユーザー情報を取得してcurrentUserに保存
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                currentUser = userDoc.data();
+            }
             await loadDataFromFirestore(user.uid); 
-            showModeSelectionScreen(); // 学習モード選択画面を表示
+            showModeSelectionScreen();
         } else {
             words = []; // ログアウト時にローカルデータをクリア
             sentences = []; // ログアウト時にローカルデータをクリア
+            currentUser = null; // ★ ログアウト時にクリア
             showAuthScreen();
         }
     });
@@ -116,9 +120,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // Firebaseの機能でユーザーを作成
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // 登録成功
-                    alert('登録が完了しました！');
-                    // onAuthStateChangedが自動で検知して画面を切り替える
+                    // ★★★ ここから追加 ★★★
+                    const user = userCredential.user;
+                    // 新規ユーザーのドキュメントを作成し、プラン情報を設定
+                    db.collection('users').doc(user.uid).set({
+                        email: user.email,
+                        plan: 'free', // 新規登録時は全員'free'プラン
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                    .then(() => {
+                        alert('登録が完了しました！');
+                    })
+                    .catch(error => {
+                        console.error("ユーザー情報の保存に失敗しました:", error);
+                    });
+                    // ★★★ ここまで追加 ★★★
                 })
                 .catch((error) => {
                     // 登録失敗
@@ -651,6 +667,20 @@ document.addEventListener('DOMContentLoaded', () => {
         filterByTagButton.style.marginTop = '15px';
         filterByTagButton.addEventListener('click', () => showTagSelectionScreen('words'));
 
+        // ★「4択クイズ」ボタンを新規追加
+        const quizButton = document.createElement('button');
+        quizButton.textContent = '4択クイズで実力試し';
+        quizButton.className = 'btn quiz-btn'; 
+        quizButton.style.marginTop = '15px';
+        quizButton.addEventListener('click', () => {
+            if (words.length < 4) {
+                alert('4択クイズを作成するには、単語が4つ以上必要です。');
+                return;
+            }
+            wordsForReview = [...words]; // 一旦すべての単語を対象にする
+            showWordQuizScreen();
+        });
+
         const backButton = document.createElement('button');
         backButton.textContent = '戻る';
         backButton.className = 'btn back-btn';
@@ -660,6 +690,23 @@ document.addEventListener('DOMContentLoaded', () => {
         appContainer.appendChild(title);
         appContainer.appendChild(reviewAllButton);
         appContainer.appendChild(filterByTagButton);
+
+        // ユーザーのプランが'premium'の場合のみ、クイズボタンを表示する
+        if (currentUser && currentUser.plan === 'premium') {
+            const quizButton = document.createElement('button');
+            quizButton.textContent = '4択クイズで実力試し';
+            quizButton.className = 'btn quiz-btn';
+            quizButton.style.marginTop = '15px';
+            quizButton.addEventListener('click', () => {
+                if (words.length < 4) {
+                    alert('4択クイズを作成するには、単語が4つ以上必要です。');
+                    return;
+                }
+                wordsForReview = [...words];
+                showWordQuizScreen();
+            });
+            appContainer.appendChild(quizButton);
+        }
         appContainer.appendChild(backButton);
     }
 
@@ -1100,5 +1147,79 @@ document.addEventListener('DOMContentLoaded', () => {
             onComplete(currentModalTags);
             document.body.removeChild(modalOverlay);
         });
+    }
+
+    // ★★★ 4択クイズ画面 (まるごと新規追加) ★★★
+    function showWordQuizScreen() {
+        currentIndex = 0;
+        // 問題の順番をシャッフルする
+        wordsForReview.sort(() => Math.random() - 0.5);
+        renderCurrentQuiz();
+    }
+
+    // ★★★ 現在のクイズ問題を1問描画する関数 (まるごと新規追加) ★★★
+    function renderCurrentQuiz() {
+        appContainer.innerHTML = '';
+        const correctWord = wordsForReview[currentIndex];
+
+        // --- 問題を作成 ---
+        const questionText = document.createElement('h3');
+        questionText.textContent = correctWord.english;
+        questionText.className = 'quiz-question';
+
+        // --- 選択肢を作成 ---
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'quiz-options-container';
+
+        // 不正解の選択肢を3つランダムに選ぶ
+        const distractors = words
+            .filter(word => word.id !== correctWord.id) // 正解の単語を除く
+            .sort(() => Math.random() - 0.5) // 全体をシャッフル
+            .slice(0, 3); // 先頭から3つ取得
+
+        // 正解と不正解を結合し、再度シャッフルして選択肢リストを作成
+        const options = [correctWord, ...distractors].sort(() => Math.random() - 0.5);
+
+        options.forEach(option => {
+            const optionButton = document.createElement('button');
+            optionButton.textContent = option.japanese;
+            optionButton.className = 'btn quiz-option-btn';
+
+            optionButton.addEventListener('click', () => {
+                // --- 答え合わせ処理 ---
+                // 全てのボタンをクリック不可にする
+                optionsContainer.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
+
+                if (option.id === correctWord.id) {
+                    // 正解の場合
+                    optionButton.classList.add('correct');
+                    // ここに「正解した」という学習記録を保存する処理を追加する (将来のステップ)
+                } else {
+                    // 不正解の場合
+                    optionButton.classList.add('incorrect');
+                    // 正解のボタンを緑色で表示する
+                    const correctButton = Array.from(optionsContainer.querySelectorAll('.quiz-option-btn')).find(btn => btn.textContent === correctWord.japanese);
+                    if (correctButton) {
+                    correctButton.classList.add('correct');
+                    }
+                    // ここに「不正解だった」という学習記録を保存する処理を追加する (将来のステップ)
+                }
+
+                // 2秒後に次の問題へ進む
+                setTimeout(() => {
+                    if (currentIndex < wordsForReview.length - 1) {
+                        currentIndex++;
+                        renderCurrentQuiz();
+                    } else {
+                        alert('クイズ終了です！');
+                        showModeSelectionScreen();
+                    }
+                }, 2000);
+            });
+            optionsContainer.appendChild(optionButton);
+        });
+
+        appContainer.appendChild(questionText);
+        appContainer.appendChild(optionsContainer);
     }
 });

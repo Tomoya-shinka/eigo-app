@@ -528,3 +528,46 @@ body {
     user-select: none;
     -webkit-user-select: none;
 }
+
+/* ---- 4択クイズのスタイル ---- */
+.quiz-question {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quiz-options-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.quiz-option-btn {
+    width: 100%;
+    background-color: #3a3a3c;
+    border: 1px solid #555;
+    text-align: left;
+    padding: 15px;
+}
+
+.quiz-option-btn.correct {
+    background-color: #34c759; /* 正解の色 (緑) */
+    color: white;
+    border-color: #34c759;
+}
+
+.quiz-option-btn.incorrect {
+    background-color: #ff3b30; /* 不正解の色 (赤) */
+    color: white;
+    border-color: #ff3b30;
+}
+
+/* ---- クイズボタン専用のスタイル ---- */
+.quiz-btn {
+    background-color: #5856d6; /* 紫色 */
+}
+.quiz-btn:hover {
+    background-color: #4341a5;
+}
