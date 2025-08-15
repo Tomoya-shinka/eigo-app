@@ -571,3 +571,15 @@ body {
 .quiz-btn:hover {
     background-color: #4341a5;
 }
+
+.quiz-close-button {
+    position: absolute; /* 絶対位置指定 */
+    top: -80px;       /* 親要素のtopから10px */
+    right: -30px;      /* 親要素のrightから10px */
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ccc;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    z-index: 10; /* 他の要素よりも前面に表示するため */
+}

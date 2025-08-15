@@ -1157,69 +1157,78 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCurrentQuiz();
     }
 
-    // ★★★ 現在のクイズ問題を1問描画する関数 (まるごと新規追加) ★★★
     function renderCurrentQuiz() {
-        appContainer.innerHTML = '';
-        const correctWord = wordsForReview[currentIndex];
+    appContainer.innerHTML = '';
 
-        // --- 問題を作成 ---
-        const questionText = document.createElement('h3');
-        questionText.textContent = correctWord.english;
-        questionText.className = 'quiz-question';
+    // ★ クイズ内容をまとめるコンテナを作成
+    const quizContent = document.createElement('div');
+    quizContent.className = 'quiz-content';
+    quizContent.style.position = 'relative'; // 相対位置指定の基準
 
-        // --- 選択肢を作成 ---
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = 'quiz-options-container';
+    // ★ 「×」ボタンを作成してコンテナに追加
+    const closeButton = document.createElement('i');
+    closeButton.className = 'fa-solid fa-xmark quiz-close-button';
+    closeButton.title = '中断して戻る';
+    closeButton.addEventListener('click', showWordReviewOptionsScreen);
+    quizContent.appendChild(closeButton);
 
-        // 不正解の選択肢を3つランダムに選ぶ
-        const distractors = words
-            .filter(word => word.id !== correctWord.id) // 正解の単語を除く
-            .sort(() => Math.random() - 0.5) // 全体をシャッフル
-            .slice(0, 3); // 先頭から3つ取得
+    const correctWord = wordsForReview ? wordsForReview[[currentIndex]] : null;
 
-        // 正解と不正解を結合し、再度シャッフルして選択肢リストを作成
-        const options = [correctWord, ...distractors].sort(() => Math.random() - 0.5);
-
-        options.forEach(option => {
-            const optionButton = document.createElement('button');
-            optionButton.textContent = option.japanese;
-            optionButton.className = 'btn quiz-option-btn';
-
-            optionButton.addEventListener('click', () => {
-                // --- 答え合わせ処理 ---
-                // 全てのボタンをクリック不可にする
-                optionsContainer.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
-
-                if (option.id === correctWord.id) {
-                    // 正解の場合
-                    optionButton.classList.add('correct');
-                    // ここに「正解した」という学習記録を保存する処理を追加する (将来のステップ)
-                } else {
-                    // 不正解の場合
-                    optionButton.classList.add('incorrect');
-                    // 正解のボタンを緑色で表示する
-                    const correctButton = Array.from(optionsContainer.querySelectorAll('.quiz-option-btn')).find(btn => btn.textContent === correctWord.japanese);
-                    if (correctButton) {
-                    correctButton.classList.add('correct');
-                    }
-                    // ここに「不正解だった」という学習記録を保存する処理を追加する (将来のステップ)
-                }
-
-                // 2秒後に次の問題へ進む
-                setTimeout(() => {
-                    if (currentIndex < wordsForReview.length - 1) {
-                        currentIndex++;
-                        renderCurrentQuiz();
-                    } else {
-                        alert('クイズ終了です！');
-                        showModeSelectionScreen();
-                    }
-                }, 2000);
-            });
-            optionsContainer.appendChild(optionButton);
-        });
-
-        appContainer.appendChild(questionText);
-        appContainer.appendChild(optionsContainer);
+    if (!correctWord) {
+        appContainer.textContent = '問題がありません。';
+        return;
     }
+
+    // --- 問題を作成してコンテナに追加 ---
+    const questionText = document.createElement('h3');
+    questionText.textContent = correctWord.english;
+    questionText.className = 'quiz-question';
+    quizContent.appendChild(questionText);
+
+    // --- 選択肢を作成してコンテナに追加 ---
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'quiz-options-container';
+
+    const distractors = words
+        .filter(word => word.id !== correctWord.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+
+    const options = [correctWord, ...distractors].sort(() => Math.random() - 0.5);
+
+    options.forEach(option => {
+        const optionButton = document.createElement('button');
+        optionButton.textContent = option.japanese;
+        optionButton.className = 'btn quiz-option-btn';
+
+        optionButton.addEventListener('click', () => {
+            optionsContainer.querySelectorAll('.quiz-option-btn').forEach(btn => btn.disabled = true);
+
+            if (option.id === correctWord.id) {
+                optionButton.classList.add('correct');
+            } else {
+                optionButton.classList.add('incorrect');
+                const correctButton = Array.from(optionsContainer.querySelectorAll('.quiz-option-btn')).find(btn => btn.textContent === correctWord.japanese);
+                if (correctButton) {
+                    correctButton.classList.add('correct');
+                }
+            }
+
+            setTimeout(() => {
+                if (currentIndex < wordsForReview.length - 1) {
+                    currentIndex++;
+                    renderCurrentQuiz();
+                } else {
+                    alert('クイズ終了です！');
+                    showModeSelectionScreen();
+                }
+            }, 2000);
+        });
+        optionsContainer.appendChild(optionButton);
+    });
+    quizContent.appendChild(optionsContainer);
+
+    // ★ 作成したクイズコンテナをappContainerに追加
+    appContainer.appendChild(quizContent);
+}
 });
